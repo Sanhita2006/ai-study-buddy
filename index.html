@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Study Buddy</title>
+</head>
+
+<body>
+    <h2>AI Study Buddy 📚</h2>
+    
+    <textarea id="question" placeholder="আপনার প্রশ্নটি লিখুন..."></textarea><br><br>
+    <button onclick="askAI()">উত্তর ব্যাখ্যা করো</button>
+
+    <h3>ব্যাখ্যা:</h3>
+    <div id="result"></div>
+
+    <script>
+        async function askAI() {
+            const questionText = document.getElementById("question").value;
+            document.getElementById("result").innerText = "চিন্তা করছে...";
+
+            try {
+                const response = await fetch("http://localhost:8000/api/explain", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question: questionText })
+                });
+
+                const data = await response.json();
+                document.getElementById("result").innerText = data.explanation;
+            } catch (error) {
+                document.getElementById("result").innerText = "ব্যাকএন্ডের সাথে সংযোগ করা যাচ্ছে না!";
+            }
+        }
+    </script>
+</body>
+</html>
