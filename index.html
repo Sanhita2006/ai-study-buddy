@@ -1,97 +1,154 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Buddy</title>
+    <!-- Tailwind CSS (স্টাইলিংয়ের জন্য) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome (আইকনের জন্য) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Custom scrollbar for clean dark UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+    </style>
 </head>
-<!-- Tailwind CSS (স্টাইলিংয়ের জন্য) -->
-<script src="https://cdn.tailwindcss.com"></script>
+<body class="bg-[#0f172a] text-slate-100 h-screen flex flex-col justify-between font-sans overflow-hidden">
 
-<!-- Font Awesome (আইকনের জন্য) -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<body>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col justify-between font-sans">
-
-    <!-- Header Section -->
-    <header class="p-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center">
-        <h1 class="text-xl font-bold flex items-center gap-2">
-            <i class="fa-solid fa-graduation-cap text-indigo-400"></i> AI Study Buddy
-        </h1>
-        <span class="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30">
-            Powered by Gemma
-        </span>
+    <!-- Top Navigation Bar -->
+    <header class="p-4 bg-[#1e293b]/50 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2 text-indigo-400 font-semibold text-lg">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span class="text-white">AI Study Buddy</span>
+        </div>
     </header>
 
-    <!-- Chat Container -->
-    <main class="flex-1 p-4 max-w-3xl w-full mx-auto overflow-y-auto space-y-4" id="chat-box">
+    <!-- Chat Message Container -->
+    <main class="flex-1 p-4 md:p-6 max-w-4xl w-full mx-auto overflow-y-auto space-y-5" id="chat-box">
         
-        <!-- Bot Welcome Message -->
-        <div class="flex gap-3">
-            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm">
+        <!-- Default AI Welcome Message -->
+        <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">
                 AI
             </div>
-            <div class="bg-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[80%] border border-slate-700">
-                হ্যালো! আমি তোমার AI Study Buddy 📚। আজ পড়াশোনার কী বিষয়ে সাহায্য প্রয়োজন?
+            <div class="bg-[#1e293b] text-slate-200 px-4 py-2.5 rounded-2xl rounded-tl-none border border-slate-700/50 max-w-[80%] text-sm">
+                Hello! I'm your AI Study Buddy 📚. What do you need help studying today?
             </div>
         </div>
 
     </main>
 
-    <!-- Input Section -->
-    <footer class="p-4 bg-slate-800 border-t border-slate-700">
-        <div class="max-w-3xl mx-auto flex gap-2">
-            <textarea id="user-input" rows="1" 
-                placeholder="আপনার প্রশ্নটি লিখুন..." 
-                class="flex-1 bg-slate-900 border border-slate-700 rounded-xl p-3 focus:outline-none focus:border-indigo-500 text-sm resize-none"></textarea>
+    <!-- Input Section at Bottom -->
+    <footer class="p-4 bg-[#0f172a] border-t border-slate-800/60">
+        <div class="max-w-4xl mx-auto flex items-center gap-3">
+            <input type="text" id="user-input" 
+                placeholder="Enter your question..." 
+                class="flex-1 bg-[#1e293b] border border-slate-700/60 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-blue-500 placeholder-slate-500">
             
             <button id="send-btn" 
-                class="bg-indigo-600 hover:bg-indigo-500 px-5 rounded-xl font-medium transition flex items-center justify-center gap-2">
-                <span>পাঠাও</span>
-                <i class="fa-solid fa-paper-plane"></i>
+                class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-xl text-sm font-medium transition flex items-center gap-2 shrink-0">
+                <span>Send</span>
+                <i class="fa-solid fa-paper-plane text-xs"></i>
             </button>
         </div>
     </footer>
-<script>
-const chatBox = document.getElementById('chat-box');
-const userInput = document.getElementById('user-input');
-const sendBtn = document.getElementById('send-btn');
 
-sendBtn.addEventListener('click', async () => {
-    const text = userInput.value.trim();
-    if (!text) return;
+    <!-- JavaScript Logic -->
+    <script>
+        // 🔑 আপনার Gemma / Gemini API Key টি এখানে বসান
+        const API_KEY = "YOUR_GEMINI_API_KEY_HERE";
 
-    // ১. ইউজারের মেসেজ চ্যাটবক্সে যোগ করা
-    chatBox.innerHTML += `
-        <div class="flex gap-3 justify-end">
-            <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%]">
-                ${text}
-            </div>
-        </div>
-    `;
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
 
-    userInput.value = '';
-    chatBox.scrollTop = chatBox.scrollHeight;
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
 
-    // ২. AI-এর লোডিং অ্যানিমেশন দেখানো
-    const loadingId = 'loading-' + Date.now();
-    chatBox.innerHTML += `
-        <div class="flex gap-3" id="${loadingId}">
-            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm">AI</div>
-            <div class="bg-slate-800 p-3 rounded-2xl rounded-tl-none border border-slate-700 text-slate-400 flex items-center gap-2">
-                <i class="fa-solid fa-circle-notch animate-spin"></i> উত্তর তৈরি হচ্ছে...
-            </div>
-        </div>
-    `;
+            // 1. ইউজার মেসেজ চ্যাটবক্সে দেখানো (ডানপাশে ব্লু বাবল)
+            chatBox.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="bg-blue-600 text-white px-4 py-2.5 rounded-2xl rounded-tr-none max-w-[80%] text-sm">
+                        ${escapeHtml(text)}
+                    </div>
+                </div>
+            `;
 
-    // ৩. Gemma API-তে রিকোয়েস্ট পাঠানো এবং উত্তর বসানো (এখানে আপনার API কল হবে)
-    /* 
-    const response = await fetchGemmaAPI(text); 
-    document.getElementById(loadingId).querySelector('div:last-child').innerText = response;
-    */
-});
-</script>
+            userInput.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // 2. AI-এর "Creating an answer..." লোডিং স্টেট দেখানো
+            const loadingId = 'loading-' + Date.now();
+            chatBox.innerHTML += `
+                <div class="flex items-start gap-3" id="${loadingId}">
+                    <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">
+                        AI
+                    </div>
+                    <div class="bg-[#1e293b] text-slate-300 px-4 py-2.5 rounded-2xl rounded-tl-none border border-slate-700/50 text-sm flex items-center gap-2">
+                        <i class="fa-regular fa-circle animate-spin"></i> Creating an answer...
+                    </div>
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // 3. API থেকে উত্তর আনা
+            try {
+                const aiResponse = await getGemmaResponse(text);
+                
+                // লোডিং টেক্সট সরিয়ে আসল উত্তর বসানো
+                const loadingElement = document.getElementById(loadingId);
+                const textContainer = loadingElement.querySelector('div:last-child');
+                textContainer.innerHTML = escapeHtml(aiResponse).replace(/\n/g, '<br>');
+            } catch (error) {
+                const loadingElement = document.getElementById(loadingId);
+                const textContainer = loadingElement.querySelector('div:last-child');
+                textContainer.innerText = "Something went wrong. Please check your API key or connection.";
+                textContainer.classList.add("text-red-400");
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Send বাটনে ক্লিক বা Enter চাপলে মেসেজ যাবে
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Gemma/Gemini API Request Function
+        async function getGemmaResponse(userQuery) {
+            const systemPrompt = "You are an AI Study Buddy. Help students by answering questions accurately and simply.";
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [
+                            { text: systemPrompt },
+                            { text: userQuery }
+                        ]
+                    }]
+                })
+            });
+
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        // HTML injection রোখার নিরাপদ উপায়
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
 </body>
-</body>
-
-
 </html>
