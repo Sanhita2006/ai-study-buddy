@@ -1,37 +1,57 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <title>AI Study Buddy</title>
+   
 </head>
+<!-- Tailwind CSS (স্টাইলিংয়ের জন্য) -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Font Awesome (আইকনের জন্য) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <body>
-    <h2>AI Study Buddy 📚</h2>
-    
-    <textarea id="question" placeholder="আপনার প্রশ্নটি লিখুন..."></textarea><br><br>
-    <button onclick="askAI()">উত্তর ব্যাখ্যা করো</button>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col justify-between font-sans">
 
-    <h3>ব্যাখ্যা:</h3>
-    <div id="result"></div>
+    <!-- Header Section -->
+    <header class="p-4 bg-slate-800 border-b border-slate-700 flex justify-between items-center">
+        <h1 class="text-xl font-bold flex items-center gap-2">
+            <i class="fa-solid fa-graduation-cap text-indigo-400"></i> AI Study Buddy
+        </h1>
+        <span class="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full border border-indigo-500/30">
+            Powered by Gemma
+        </span>
+    </header>
 
-    <script>
-        async function askAI() {
-            const questionText = document.getElementById("question").value;
-            document.getElementById("result").innerText = "চিন্তা করছে...";
+    <!-- Chat Container -->
+    <main class="flex-1 p-4 max-w-3xl w-full mx-auto overflow-y-auto space-y-4" id="chat-box">
+        
+        <!-- Bot Welcome Message -->
+        <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm">
+                AI
+            </div>
+            <div class="bg-slate-800 p-3 rounded-2xl rounded-tl-none max-w-[80%] border border-slate-700">
+                হ্যালো! আমি তোমার AI Study Buddy 📚। আজ পড়াশোনার কী বিষয়ে সাহায্য প্রয়োজন?
+            </div>
+        </div>
 
-            try {
-                const response = await fetch("http://localhost:8000/api/explain", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ question: questionText })
-                });
+    </main>
 
-                const data = await response.json();
-                document.getElementById("result").innerText = data.explanation;
-            } catch (error) {
-                document.getElementById("result").innerText = "ব্যাকএন্ডের সাথে সংযোগ করা যাচ্ছে না!";
-            }
-        }
-    </script>
+    <!-- Input Section -->
+    <footer class="p-4 bg-slate-800 border-t border-slate-700">
+        <div class="max-w-3xl mx-auto flex gap-2">
+            <textarea id="user-input" rows="1" 
+                placeholder="আপনার প্রশ্নটি লিখুন..." 
+                class="flex-1 bg-slate-900 border border-slate-700 rounded-xl p-3 focus:outline-none focus:border-indigo-500 text-sm resize-none"></textarea>
+            
+            <button id="send-btn" 
+                class="bg-indigo-600 hover:bg-indigo-500 px-5 rounded-xl font-medium transition flex items-center justify-center gap-2">
+                <span>পাঠাও</span>
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </footer>
+
+</body>
 </body>
 </html>
