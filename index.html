@@ -51,7 +51,47 @@
             </button>
         </div>
     </footer>
+<script>
+const chatBox = document.getElementById('chat-box');
+const userInput = document.getElementById('user-input');
+const sendBtn = document.getElementById('send-btn');
 
+sendBtn.addEventListener('click', async () => {
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    // ১. ইউজারের মেসেজ চ্যাটবক্সে যোগ করা
+    chatBox.innerHTML += `
+        <div class="flex gap-3 justify-end">
+            <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-none max-w-[80%]">
+                ${text}
+            </div>
+        </div>
+    `;
+
+    userInput.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // ২. AI-এর লোডিং অ্যানিমেশন দেখানো
+    const loadingId = 'loading-' + Date.now();
+    chatBox.innerHTML += `
+        <div class="flex gap-3" id="${loadingId}">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-sm">AI</div>
+            <div class="bg-slate-800 p-3 rounded-2xl rounded-tl-none border border-slate-700 text-slate-400 flex items-center gap-2">
+                <i class="fa-solid fa-circle-notch animate-spin"></i> উত্তর তৈরি হচ্ছে...
+            </div>
+        </div>
+    `;
+
+    // ৩. Gemma API-তে রিকোয়েস্ট পাঠানো এবং উত্তর বসানো (এখানে আপনার API কল হবে)
+    /* 
+    const response = await fetchGemmaAPI(text); 
+    document.getElementById(loadingId).querySelector('div:last-child').innerText = response;
+    */
+});
+</script>
 </body>
 </body>
+
+
 </html>
